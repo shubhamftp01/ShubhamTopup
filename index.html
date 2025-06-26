@@ -4,34 +4,74 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ShubhamTopup - Recharge Wallet</title>
-  <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      font-family: Arial;
-      background: #f4f4f4;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #e60000, #ff9999);
+      color: #333;
+      margin: 0;
+      padding: 0;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
     }
     .container {
       background: white;
+      margin-top: 30px;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      width: 300px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      width: 320px;
+    }
+    h2 span {
+      color: #e60000;
     }
     input, select, button {
       width: 100%;
-      margin: 10px 0;
       padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background-color: #e60000;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #cc0000;
     }
     #msg {
       margin-top: 10px;
       color: green;
     }
-    h2 span {
+    .history {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
+      padding: 20px;
+      margin: 20px;
+    }
+    .history h3 {
+      margin-top: 0;
       color: #e60000;
+    }
+    .history-item {
+      border-bottom: 1px solid #ccc;
+      padding: 10px 0;
+    }
+    .history-item:last-child {
+      border-bottom: none;
+    }
+    .footer {
+      margin: 20px 0;
+      font-size: 14px;
+      color: white;
     }
   </style>
 </head>
@@ -39,6 +79,9 @@
   <div class="container">
     <h2>Welcome to <span>ShubhamTopup</span></h2>
     <p><strong>Wallet Balance:</strong> ₹<span id="wallet">100</span></p>
+    <input type="number" id="addMoneyInput" placeholder="Add Money ₹" />
+    <button onclick="addMoney()">Add to Wallet</button>
+
     <select id="rechargeType">
       <option value="mobile">📱 Mobile</option>
       <option value="dth">📺 DTH</option>
@@ -52,8 +95,34 @@
     <p id="msg"></p>
   </div>
 
+  <div class="history">
+    <h3>Recharge History</h3>
+    <div id="historyList"></div>
+  </div>
+
+  <div class="footer">
+    <p>© 2025 ShubhamTopup | Powered by Shubham Udaan</p>
+  </div>
+
   <script>
     let wallet = 100;
+
+    function updateWalletDisplay() {
+      document.getElementById("wallet").innerText = wallet;
+    }
+
+    function addMoney() {
+      const input = document.getElementById("addMoneyInput");
+      const amount = parseFloat(input.value);
+      if (!isNaN(amount) && amount > 0) {
+        wallet += amount;
+        updateWalletDisplay();
+        input.value = "";
+        document.getElementById("msg").innerText = `₹${amount} added to wallet!`;
+      } else {
+        document.getElementById("msg").innerText = "Enter valid amount to add.";
+      }
+    }
 
     function recharge() {
       const type = document.getElementById("rechargeType").value;
@@ -71,14 +140,37 @@
       }
 
       wallet -= amount;
-      document.getElementById("wallet").innerText = wallet;
+      updateWalletDisplay();
       document.getElementById("msg").innerText = `Recharge Successful! Type: ${type}, ID: ${number}, Amount: ₹${amount}`;
 
-      // Optionally store history in localStorage
       const history = JSON.parse(localStorage.getItem("rechargeHistory")) || [];
-      history.push({ type, number, amount, date: new Date().toLocaleString() });
+      const record = { type, number, amount, date: new Date().toLocaleString() };
+      history.push(record);
       localStorage.setItem("rechargeHistory", JSON.stringify(history));
+      displayHistory();
     }
+
+    function displayHistory() {
+      const historyList = document.getElementById("historyList");
+      const history = JSON.parse(localStorage.getItem("rechargeHistory")) || [];
+      historyList.innerHTML = "";
+      if (history.length === 0) {
+        historyList.innerHTML = "<p>No history found.</p>";
+        return;
+      }
+      history.reverse().forEach(item => {
+        const div = document.createElement("div");
+        div.className = "history-item";
+        div.innerHTML = `
+          <strong>${item.type.toUpperCase()}</strong> | ₹${item.amount}<br/>
+          ID: ${item.number} <br/>
+          <small>${item.date}</small>
+        `;
+        historyList.appendChild(div);
+      });
+    }
+
+    displayHistory();
   </script>
 </body>
 </html>
