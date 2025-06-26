@@ -1,81 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>ShubhamTopup - Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShubhamTopup - Recharge</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: #333;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 0;
     }
+
     header {
       background-color: #e60000;
       color: white;
       padding: 20px;
       text-align: center;
-      position: relative;
     }
-    header .logout {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background-color: white;
-      color: #e60000;
-      padding: 8px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
+
+    .wallet {
+      background: white;
+      margin: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 18px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-    .container {
+
+    .recharge-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
       padding: 20px;
-      max-width: 500px;
-      margin: auto;
     }
-    h2 {
-      color: #e60000;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-    button {
+
+    .btn {
       background-color: #e60000;
       color: white;
       border: none;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 16px;
       cursor: pointer;
+      transition: 0.3s;
     }
-    button:hover {
+
+    .btn:hover {
       background-color: #cc0000;
     }
-    .wallet {
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
+
     .history {
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-      margin-top: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin: 20px;
+      text-align: center;
     }
-    ul {
-      padding-left: 20px;
+
+    footer {
+      background-color: #e60000;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      margin-top: 30px;
     }
-    li {
-      margin-bottom: 5px;
+
+    @media screen and (max-width: 600px) {
+      .recharge-options {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -83,107 +75,37 @@
 
   <header>
     <h1>📱 ShubhamTopup</h1>
-    <div class="logout" onclick="logout()">Logout</div>
+    <p>Recharge | Wallet | History</p>
   </header>
 
-  <div class="container">
-
-    <!-- 💰 Wallet Section -->
-    <div class="wallet">
-      <h3>Wallet Balance: ₹<span id="wallet">0</span></h3>
-      <input type="number" id="addAmount" placeholder="Add Money (e.g. ₹100)">
-      <button onclick="addMoney()">Add Money</button>
-    </div>
-
-    <!-- 🔄 Recharge Form -->
-    <h2>Recharge Mobile</h2>
-    <form onsubmit="recharge(event)">
-      <input type="text" id="number" placeholder="Mobile Number" required maxlength="10">
-
-      <select id="operator" required>
-        <option value="">Select Operator</option>
-        <option value="Jio">Jio</option>
-        <option value="Airtel">Airtel</option>
-        <option value="VI">VI (Vodafone Idea)</option>
-        <option value="BSNL">BSNL</option>
-        <option value="MTNL">MTNL</option>
-        <option value="Tata Docomo">Tata Docomo</option>
-      </select>
-
-      <input type="number" id="amount" placeholder="Recharge Amount ₹" required>
-      <button type="submit">Recharge Now</button>
-    </form>
-
-    <!-- 🧾 Recharge History -->
-    <div class="history">
-      <h3>Recharge History</h3>
-      <ul id="history"></ul>
-    </div>
-
+  <div class="wallet">
+    💰 Wallet Balance: ₹500  
+    <br><br>
+    <button class="btn" onclick="alert('Add Money Feature Coming Soon!')">➕ Add Money</button>
   </div>
 
+  <div class="recharge-options">
+    <button class="btn" onclick="doRecharge('Jio')">📶 Jio Recharge</button>
+    <button class="btn" onclick="doRecharge('Airtel')">📶 Airtel Recharge</button>
+    <button class="btn" onclick="doRecharge('VI')">📶 VI Recharge</button>
+    <button class="btn" onclick="doRecharge('BSNL')">📶 BSNL Recharge</button>
+  </div>
+
+  <div class="history">
+    <h3>📜 Recharge History</h3>
+    <p>No recent recharges.</p>
+  </div>
+
+  <footer>
+    &copy; 2025 ShubhamTopup. All rights reserved.
+  </footer>
+
   <script>
-    // Load wallet balance
-    let wallet = localStorage.getItem("wallet") || 0;
-    document.getElementById("wallet").innerText = wallet;
-
-    // Add Money
-    function addMoney() {
-      let amt = parseInt(document.getElementById("addAmount").value);
-      if (amt > 0) {
-        wallet = parseInt(wallet) + amt;
-        localStorage.setItem("wallet", wallet);
-        document.getElementById("wallet").innerText = wallet;
-        document.getElementById("addAmount").value = '';
-        alert("💰 Money Added Successfully!");
-      } else {
-        alert("⚠️ Enter a valid amount");
-      }
+    function doRecharge(company) {
+      alert("Recharge request sent to " + company + " (dummy recharge)");
     }
-
-    // Recharge
-    function recharge(e) {
-      e.preventDefault();
-      let number = document.getElementById("number").value;
-      let operator = document.getElementById("operator").value;
-      let amount = parseInt(document.getElementById("amount").value);
-
-      if (amount > wallet) {
-        alert("❌ Not enough wallet balance");
-        return;
-      }
-
-      let hist = JSON.parse(localStorage.getItem("history")) || [];
-      let time = new Date().toLocaleString();
-      hist.unshift(`${number} - ${operator} - ₹${amount} - ${time}`);
-      localStorage.setItem("history", JSON.stringify(hist));
-
-      wallet -= amount;
-      localStorage.setItem("wallet", wallet);
-      document.getElementById("wallet").innerText = wallet;
-      e.target.reset();
-      loadHistory();
-      alert("✅ Recharge Successful!");
-    }
-
-    // Load history
-    function loadHistory() {
-      let hist = JSON.parse(localStorage.getItem("history")) || [];
-      let list = "";
-      hist.forEach(item => {
-        list += `<li>${item}</li>`;
-      });
-      document.getElementById("history").innerHTML = list;
-    }
-
-    // Logout
-    function logout() {
-      localStorage.removeItem("user");
-      window.location.href = "login.html";
-    }
-
-    loadHistory();
   </script>
 
 </body>
 </html>
+
