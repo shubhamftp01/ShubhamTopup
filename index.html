@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShubhamTopup - Recharge Wallet</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+    input, select, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+    }
+    #msg {
+      margin-top: 10px;
+      color: green;
+    }
+    h2 span {
+      color: #e60000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Welcome to <span>ShubhamTopup</span></h2>
+    <p><strong>Wallet Balance:</strong> ₹<span id="wallet">100</span></p>
+    <select id="rechargeType">
+      <option value="mobile">📱 Mobile</option>
+      <option value="dth">📺 DTH</option>
+      <option value="electricity">💡 Electricity</option>
+      <option value="gas">🧾 Gas</option>
+      <option value="water">💧 Water</option>
+    </select>
+    <input type="text" id="number" placeholder="Enter Number / ID" />
+    <input type="number" id="amount" placeholder="Amount ₹" />
+    <button onclick="recharge()">Recharge Now</button>
+    <p id="msg"></p>
+  </div>
+
+  <script>
+    let wallet = 100;
+
+    function recharge() {
+      const type = document.getElementById("rechargeType").value;
+      const number = document.getElementById("number").value.trim();
+      const amount = parseFloat(document.getElementById("amount").value);
+
+      if (number === "" || isNaN(amount) || amount <= 0) {
+        document.getElementById("msg").innerText = "Please enter valid details.";
+        return;
+      }
+
+      if (amount > wallet) {
+        document.getElementById("msg").innerText = "Insufficient wallet balance!";
+        return;
+      }
+
+      wallet -= amount;
+      document.getElementById("wallet").innerText = wallet;
+      document.getElementById("msg").innerText = `Recharge Successful! Type: ${type}, ID: ${number}, Amount: ₹${amount}`;
+
+      // Optionally store history in localStorage
+      const history = JSON.parse(localStorage.getItem("rechargeHistory")) || [];
+      history.push({ type, number, amount, date: new Date().toLocaleString() });
+      localStorage.setItem("rechargeHistory", JSON.stringify(history));
+    }
+  </script>
+</body>
+</html>
