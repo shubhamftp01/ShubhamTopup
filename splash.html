@@ -1,0 +1,40 @@
+<!-- splash.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ShubhamTopup</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to right, #e60000, #ff9999);
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+    }
+    img {
+      width: 150px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 28px;
+    }
+  </style>
+</head>
+<body>
+  <img src="logo.png" alt="ShubhamTopup Logo" />
+  <h1>ShubhamTopup</h1>
+  <p>Loading...</p>
+
+  <script>
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 2500); // 2.5 seconds splash
+  </script>
+</body>
+</html>
