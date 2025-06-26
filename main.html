@@ -2,161 +2,188 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ShubhamTopup Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShubhamTopup - Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      background: #f2f2f2;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
       color: #333;
     }
     header {
-      background: #e60000;
+      background-color: #e60000;
       color: white;
       padding: 20px;
       text-align: center;
+      position: relative;
+    }
+    header .logout {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: white;
+      color: #e60000;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
     }
     .container {
       padding: 20px;
+      max-width: 500px;
+      margin: auto;
+    }
+    h2 {
+      color: #e60000;
     }
     input, select, button {
-      display: block;
       width: 100%;
-      margin: 10px 0;
       padding: 12px;
-      font-size: 16px;
-      border-radius: 8px;
+      margin: 10px 0;
       border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
     }
     button {
-      background: #e60000;
+      background-color: #e60000;
       color: white;
       border: none;
       cursor: pointer;
     }
     button:hover {
-      background: #cc0000;
+      background-color: #cc0000;
     }
     .wallet {
-      background: #fff;
+      background: white;
       padding: 15px;
       border-radius: 10px;
       margin-bottom: 20px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     .history {
-      background: #fff;
+      background: white;
       padding: 15px;
       border-radius: 10px;
       margin-top: 20px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    .logout {
-      position: absolute;
-      right: 15px;
-      top: 25px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
+    ul {
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 5px;
     }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>📱 ShubhamTopup</h1>
-  <div class="logout" onclick="logout()">Logout</div>
-</header>
+  <header>
+    <h1>📱 ShubhamTopup</h1>
+    <div class="logout" onclick="logout()">Logout</div>
+  </header>
 
-<div class="container">
+  <div class="container">
 
-  <div class="wallet">
-    <h3>💰 Wallet Balance: ₹<span id="wallet">0</span></h3>
-    <input type="number" id="addAmount" placeholder="Add Money (e.g. 100)">
-    <button onclick="addMoney()">Add Money</button>
+    <!-- 💰 Wallet Section -->
+    <div class="wallet">
+      <h3>Wallet Balance: ₹<span id="wallet">0</span></h3>
+      <input type="number" id="addAmount" placeholder="Add Money (e.g. ₹100)">
+      <button onclick="addMoney()">Add Money</button>
+    </div>
+
+    <!-- 🔄 Recharge Form -->
+    <h2>Recharge Mobile</h2>
+    <form onsubmit="recharge(event)">
+      <input type="text" id="number" placeholder="Mobile Number" required maxlength="10">
+
+      <select id="operator" required>
+        <option value="">Select Operator</option>
+        <option value="Jio">Jio</option>
+        <option value="Airtel">Airtel</option>
+        <option value="VI">VI (Vodafone Idea)</option>
+        <option value="BSNL">BSNL</option>
+        <option value="MTNL">MTNL</option>
+        <option value="Tata Docomo">Tata Docomo</option>
+      </select>
+
+      <input type="number" id="amount" placeholder="Recharge Amount ₹" required>
+      <button type="submit">Recharge Now</button>
+    </form>
+
+    <!-- 🧾 Recharge History -->
+    <div class="history">
+      <h3>Recharge History</h3>
+      <ul id="history"></ul>
+    </div>
+
   </div>
 
-  <h2>🔄 Recharge</h2>
-  <form onsubmit="recharge(event)">
-    <input type="text" id="number" placeholder="Enter Mobile Number" required maxlength="10">
-    <select id="operator" required>
-      <option value="">Select Operator</option>
-      <option>Jio</option>
-      <option>Airtel</option>
-      <option>VI</option>
-      <option>BSNL</option>
-    </select>
-    <input type="number" id="amount" placeholder="Amount (₹)" required>
-    <button type="submit">Recharge Now</button>
-  </form>
+  <script>
+    // Load wallet balance
+    let wallet = localStorage.getItem("wallet") || 0;
+    document.getElementById("wallet").innerText = wallet;
 
-  <div class="history">
-    <h3>📜 Recharge History</h3>
-    <ul id="history"></ul>
-  </div>
+    // Add Money
+    function addMoney() {
+      let amt = parseInt(document.getElementById("addAmount").value);
+      if (amt > 0) {
+        wallet = parseInt(wallet) + amt;
+        localStorage.setItem("wallet", wallet);
+        document.getElementById("wallet").innerText = wallet;
+        document.getElementById("addAmount").value = '';
+        alert("💰 Money Added Successfully!");
+      } else {
+        alert("⚠️ Enter a valid amount");
+      }
+    }
 
-</div>
+    // Recharge
+    function recharge(e) {
+      e.preventDefault();
+      let number = document.getElementById("number").value;
+      let operator = document.getElementById("operator").value;
+      let amount = parseInt(document.getElementById("amount").value);
 
-<script>
-  // Get wallet from localStorage
-  let wallet = localStorage.getItem("wallet") || 0;
-  document.getElementById("wallet").innerText = wallet;
+      if (amount > wallet) {
+        alert("❌ Not enough wallet balance");
+        return;
+      }
 
-  function addMoney() {
-    let amount = parseInt(document.getElementById("addAmount").value);
-    if (amount > 0) {
-      wallet = parseInt(wallet) + amount;
+      let hist = JSON.parse(localStorage.getItem("history")) || [];
+      let time = new Date().toLocaleString();
+      hist.unshift(`${number} - ${operator} - ₹${amount} - ${time}`);
+      localStorage.setItem("history", JSON.stringify(hist));
+
+      wallet -= amount;
       localStorage.setItem("wallet", wallet);
       document.getElementById("wallet").innerText = wallet;
-      document.getElementById("addAmount").value = '';
-      alert("Money Added to Wallet!");
-    } else {
-      alert("Enter valid amount.");
-    }
-  }
-
-  function recharge(e) {
-    e.preventDefault();
-    let num = document.getElementById("number").value;
-    let op = document.getElementById("operator").value;
-    let amt = parseInt(document.getElementById("amount").value);
-
-    if (amt > wallet) {
-      alert("❌ Not enough wallet balance.");
-      return;
+      e.target.reset();
+      loadHistory();
+      alert("✅ Recharge Successful!");
     }
 
-    let hist = JSON.parse(localStorage.getItem("history")) || [];
-    let entry = `${num} - ${op} - ₹${amt} - ${new Date().toLocaleString()}`;
-    hist.unshift(entry);
-    localStorage.setItem("history", JSON.stringify(hist));
-    wallet -= amt;
-    localStorage.setItem("wallet", wallet);
-    document.getElementById("wallet").innerText = wallet;
+    // Load history
+    function loadHistory() {
+      let hist = JSON.parse(localStorage.getItem("history")) || [];
+      let list = "";
+      hist.forEach(item => {
+        list += `<li>${item}</li>`;
+      });
+      document.getElementById("history").innerHTML = list;
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem("user");
+      window.location.href = "login.html";
+    }
+
     loadHistory();
-    alert("✅ Recharge Successful!");
-    e.target.reset();
-  }
-
-  function loadHistory() {
-    let hist = JSON.parse(localStorage.getItem("history")) || [];
-    let list = "";
-    hist.forEach(h => {
-      list += `<li>${h}</li>`;
-    });
-    document.getElementById("history").innerHTML = list;
-  }
-
-  function logout() {
-    localStorage.removeItem("user");
-    window.location.href = "login.html";
-  }
-
-  // Load on start
-  loadHistory();
-</script>
+  </script>
 
 </body>
 </html>
-
